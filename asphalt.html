@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asphalt 9: Советы и хитрости by MarinaWinner</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- favicon (красная машинка) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='40' width='80' height='30' rx='10' fill='%23e63946'/%3E%3Ccircle cx='25' cy='70' r='12' fill='%23333'/%3E%3Ccircle cx='75' cy='70' r='12' fill='%23333'/%3E%3Crect x='30' y='20' width='40' height='25' rx='8' fill='%23b22222'/%3E%3C/svg%3E">
+  <style>
+    /* Сброс и база */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background-color: #ffffff; /* светлый фон */
+      color: #2d2d2d; /* тёмно-серый текст */
+      line-height: 1.6;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Канвас для красных частиц на светлом фоне */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      /* без фона, частицы будут рисоваться на прозрачном */
+    }
+
+    /* Контент поверх канваса */
+    .wrapper {
+      position: relative;
+      z-index: 2;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 20px 25px;
+    }
+
+    /* Шапка — белая с красной полосой */
+    header {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      color: #2d2d2d;
+      padding: 2rem 2rem;
+      border-radius: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 15px 25px -10px rgba(200, 50, 50, 0.2);
+      border-left: 8px solid #e63946; /* красный */
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #b22222; /* тёмно-красный */
+      line-height: 1.2;
+    }
+
+    header h1 i {
+      color: #e63946;
+      margin-right: 15px;
+    }
+
+    header .subhead {
+      font-size: 1.2rem;
+      margin-top: 15px;
+      color: #5a3e3e;
+      border-left: 4px solid #e63946;
+      padding-left: 20px;
+    }
+
+    /* Блок навигации */
+    .toc {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      border-radius: 30px;
+      padding: 25px 30px;
+      margin-bottom: 35px;
+      box-shadow: 0 10px 20px rgba(230, 57, 70, 0.1);
+      border: 1px solid #ffe5e5;
+    }
+
+    .toc h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #b22222;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toc h2 i {
+      color: #e63946;
+    }
+
+    .toc-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 25px;
+    }
+
+    .toc-grid a {
+      background: #ffeeee;
+      padding: 10px 22px;
+      border-radius: 40px;
+      text-decoration: none;
+      color: #b53b3b;
+      font-weight: 600;
+      transition: 0.2s;
+      border: 1px solid #ffc2c2;
+    }
+
+    .toc-grid a:hover {
+      background: #e63946;
+      color: white;
+      border-color: #b22222;
+    }
+
+    /* Карточки секций */
+    section {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      border-radius: 30px;
+      padding: 30px 35px;
+      margin-bottom: 35px;
+      box-shadow: 0 12px 25px rgba(230, 57, 70, 0.1);
+      border: 1px solid #ffd9d9;
+    }
+
+    section h2 {
+      font-size: 2.2rem;
+      font-weight: 650;
+      margin-bottom: 20px;
+      color: #b22222;
+      border-bottom: 4px solid #e63946;
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    section h2 i {
+      color: #e63946;
+      font-size: 2rem;
+    }
+
+    section h3 {
+      font-size: 1.5rem;
+      margin: 25px 0 15px 0;
+      color: #b53b3b;
+      font-weight: 600;
+      padding-left: 8px;
+      border-left: 6px solid #e63946;
+    }
+
+    /* Текст, списки */
+    p, li {
+      font-size: 1.08rem;
+      color: #3a2a2a;
+    }
+
+    ul, ol {
+      padding-left: 30px;
+      margin: 15px 0;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+
+    /* Красные выделения */
+    .badge {
+      background: #e63946;
+      color: white;
+      padding: 3px 12px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .highlight {
+      background: #fff2f2;
+      border-left: 8px solid #e63946;
+      padding: 20px 25px;
+      border-radius: 20px;
+      margin: 30px 0;
+      box-shadow: inset 0 0 0 1px #ffc2c2;
+    }
+
+    .highlight strong:first-child {
+      display: block;
+      font-size: 1.2rem;
+      color: #b22222;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .tip {
+      background: #ffecec;
+      border-radius: 20px;
+      padding: 18px 25px;
+      margin: 20px 0;
+      border: 1px dashed #e63946;
+      color: #8b3a3a;
+    }
+
+    .tip i {
+      color: #e63946;
+      margin-right: 12px;
+      font-size: 1.5rem;
+      vertical-align: middle;
+    }
+
+    .step-list {
+      list-style-type: none;
+      counter-reset: step-counter;
+    }
+
+    .step-list li {
+      counter-increment: step-counter;
+      margin-bottom: 15px;
+      padding-left: 45px;
+      position: relative;
+      font-weight: 500;
+    }
+
+    .step-list li::before {
+      content: counter(step-counter);
+      background: #e63946;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-weight: bold;
+    }
+
+    /* Светлый блок футера (красные акценты) */
+    .footer-legal {
+      background: rgba(255, 245, 245, 0.95);
+      border-radius: 50px;
+      padding: 25px 30px;
+      margin-top: 40px;
+      box-shadow: 0 15px 25px rgba(230, 57, 70, 0.15);
+      border: 2px solid #e63946;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #2d2d2d;
+    }
+
+    .footer-legal i {
+      color: #e63946;
+      margin: 0 6px;
+    }
+
+    .footer-legal .copyright-highlight {
+      background: #e63946;
+      color: white;
+      display: inline-block;
+      padding: 8px 30px;
+      border-radius: 40px;
+      margin-top: 15px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid #b22222;
+    }
+
+    /* Кнопка наверх */
+    .top-link {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #e63946;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 6px 14px rgba(200, 50, 50, 0.4);
+      z-index: 99;
+      text-decoration: none;
+      transition: 0.2s;
+      border: 2px solid #ffb3b3;
+    }
+
+    .top-link:hover {
+      background: #b22222;
+      transform: scale(1.1);
+    }
+
+    /* Адаптивность */
+    @media (max-width: 700px) {
+      .wrapper { padding: 10px 15px; }
+      header h1 { font-size: 1.8rem; }
+      section h2 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas для красных частиц -->
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="wrapper">
+    <!-- ШАПКА -->
+    <header>
+      <h1><i class="fas fa-flag-checkered"></i> Asphalt 9: Советы и хитрости <br><span style="font-size: 1.8rem;">by MarinaWinner</span></h1>
+      <div class="subhead">
+        <i class="fas fa-calendar-alt" style="margin-right: 10px;"></i> 25.07.2018 • Гонки • Gameloft <br>
+        Гайды от топ-игроков, официальные ответы и секреты прохождения.
+      </div>
+    </header>
+
+    <!-- ОГЛАВЛЕНИЕ -->
+    <div class="toc">
+      <h2><i class="fas fa-list-ul"></i> Навигация по гайду</h2>
+      <div class="toc-grid">
+        <a href="#code"><i class="fas fa-ticket-alt"></i> Код получения</a>
+        <a href="#pc"><i class="fas fa-download"></i> Скачать на ПК</a>
+        <a href="#nitro-guide"><i class="fas fa-gas-pump"></i> Общий гайд нитро</a>
+        <a href="#perfect-nitro"><i class="fas fa-bolt"></i> Идеальное нитро</a>
+        <a href="#wave-nitro"><i class="fas fa-water"></i> Нитро-волна</a>
+        <a href="#tricks"><i class="fas fa-gamepad"></i> Трюки</a>
+        <a href="#360"><i class="fas fa-redo-alt"></i> Разворот/бочка</a>
+        <a href="#cars"><i class="fas fa-car"></i> Прокачка машин</a>
+        <a href="#refuel"><i class="fas fa-oil-can"></i> Заправка</a>
+        <a href="#paint"><i class="fas fa-palette"></i> Внешний вид</a>
+        <a href="#drive"><i class="fas fa-steering-wheel"></i> Управление</a>
+        <a href="#garage"><i class="fas fa-warehouse"></i> Уровень гаража</a>
+        <a href="#modes"><i class="fas fa-trophy"></i> Режимы игры</a>
+        <a href="#race-tips"><i class="fas fa-rocket"></i> Советы по гонкам</a>
+        <a href="#career"><i class="fas fa-map"></i> Моя карьера</a>
+      </div>
+    </div>
+
+    <!-- ВСЕ РАЗДЕЛЫ (контент полностью сохранён) -->
+    <section>
+      <h2><i class="fas fa-info-circle"></i> Об игре</h2>
+      <p><strong>ASPHALT 9 LEGENDS</strong> — игра на Android (25.07.2018, Gameloft). В статье собраны советы топ-игроков, ответы разработчиков, гайды и секреты. <i class="fas fa-smile-wink"></i></p>
+      <div class="tip"><i class="fas fa-sync-alt"></i> <strong>Внимание, сайт от MarinaWinner постоянно обновляется, заходите почаще.</strong></div>
+    </section>
+
+    <section id="code">
+      <h2><i class="fas fa-qrcode"></i> Asphalt 9: Код получения</h2>
+      <p><span class="badge">NEW</span> <strong>Код получения</strong> — специальный код от разработчика за акции/подписку. Вводится в настройках игры. Активированные коды дают редкие авто и жетоны.</p>
+    </section>
+
+    <section id="pc">
+      <h2><i class="fas fa-laptop"></i> Asphalt 9: Как скачать на ПК?</h2>
+      <p>С официального сайта Gameloft или Microsoft Store.</p>
+      <h3>Минимальные требования:</h3>
+      <ul>
+        <li>ОЗУ: от 2 ГБ</li>
+        <li>Место: от 2 ГБ</li>
+        <li>Процессор: Pentium III не старше 10 лет</li>
+        <li>ОС: Windows 7,8,9.1,10 (32/64)</li>
+        <li>Эмулятор (BlueStacks)</li>
+      </ul>
+      <h3>Установка эмулятора:</h3>
+      <ol class="step-list">
+        <li>Скачайте BlueStacks с официального сайта.</li>
+        <li>Установите, войдите в Google Play.</li>
+        <li>Скачайте Asphalt 9.</li>
+      </ol>
+    </section>
+
+    <section id="nitro-guide">
+      <h2><i class="fas fa-gas-pump"></i> Общий гайд по нитро</h2>
+      <p>Собирайте баллоны, делайте трюки, тараньте соперников.</p>
+      <h3>Уровни нитро:</h3>
+      <ul>
+        <li><span style="background:#ffd0d0; padding:2px 8px; border-radius:20px;">Простое (желтое)</span> — экономно</li>
+        <li><span style="background:#ffb3b3; padding:2px 8px; border-radius:20px;">Двойное (оранж)</span> — промежуточное</li>
+        <li><span style="background:#ff8a8a; padding:2px 8px; border-radius:20px;">Идеальное (голубое)</span> — быстрое</li>
+        <li><span style="background:#e63946; color:white; padding:2px 8px; border-radius:20px;">Нитро-волна (фиол)</span> — макс. ускорение</li>
+      </ul>
+      <div class="highlight"><strong>💡 СОВЕТ</strong> <p>Чтобы не тратить нитро зря, жмите тормоз. В полёте тоже работает (удерживать 0.5 сек).</p></div>
+    </section>
+
+    <section id="perfect-nitro">
+      <h2><i class="fas fa-bolt"></i> Идеальное нитро</h2>
+      <ol class="step-list">
+        <li>Нажмите нитро один раз.</li>
+        <li>Когда белый конец шкалы в синем секторе — нажмите ещё раз.</li>
+        <li>Шкала станет голубой.</li>
+      </ol>
+    </section>
+
+    <section id="wave-nitro">
+      <h2><i class="fas fa-water"></i> Нитро-волна</h2>
+      <p>При полной шкале дважды быстро нажать нитро.</p>
+      <div class="highlight"><strong>⚠️ ВАЖНО</strong> <p>На нитро-волне сложно управлять. Используйте на прямых.</p></div>
+    </section>
+
+    <section id="tricks">
+      <h2><i class="fas fa-dharmachakra"></i> Гайд по трюкам</h2>
+      <ul>
+        <li><strong>Разворот</strong> (земля/воздух) — двойной тормоз</li>
+        <li><strong>Бочка</strong> — изогнутый трамплин</li>
+        <li><strong>Дрифт</strong> — тормоз в повороте</li>
+      </ul>
+      <div class="highlight"><strong>🚀 СОВЕТ</strong> <p>Активируйте нитро в полёте, чтобы быстро нагнать соперников.</p></div>
+    </section>
+
+    <section id="360">
+      <h2><i class="fas fa-redo-alt"></i> Разворот, бочка, нокдаун</h2>
+      <p><strong>Разворот 360°:</strong> дважды тормоз перед прыжком. <strong>Бочка:</strong> на большой скорости на изогнутый трамплин. <strong>Нокдаун:</strong> нитро+таран или разворот рядом с соперником.</p>
+    </section>
+
+    <section id="cars">
+      <h2><i class="fas fa-chart-line"></i> Прокачка машин</h2>
+      <p>Классы D/C/B/A/S. Чертежи (синие, фиолетовые, эпические) получают в карьере, клубе, сетевых, магазине. Звёзды повышают параметры. Импортные детали улучшаются за кредиты. Электромобиль: DS E-Tense. Продажа авто невозможна.</p>
+    </section>
+
+    <section id="refuel">
+      <h2><i class="fas fa-oil-can"></i> Заправка авто</h2>
+      <p>У каждой машины лимит гонок. Заправка по таймеру. Просмотр рекламы сокращает остаток времени вдвое. Приоритет: сначала ездить на высоких классах, пока низкие заправляются.</p>
+      <div class="highlight"><strong>⏳ СОВЕТ</strong> <p>Перед выходом ставьте машины на заправку. Реклама сокращает остаток, не начальное время.</p></div>
+    </section>
+
+    <section id="paint">
+      <h2><i class="fas fa-palette"></i> Изменение внешнего вида</h2>
+      <p>Капелька в гараже. Для 2★ — своя покраска, диски, суппорты. Для 3★ — карбон.</p>
+    </section>
+
+    <section id="drive">
+      <h2><i class="fas fa-steering-wheel"></i> Управление</h2>
+      <p>Ручное или TouchDrive (автоматическое с одним пальцем). Переключение перед гонкой.</p>
+    </section>
+
+    <section id="garage">
+      <h2><i class="fas fa-warehouse"></i> Уровень гаража и репутации</h2>
+      <p>Гараж повышается за новые авто и прокачку. Репутация — за мультиплеер, события, карьеру (при повышении все баки бесплатно).</p>
+    </section>
+
+    <section id="modes">
+      <h2><i class="fas fa-trophy"></i> Режимы и заезды</h2>
+      <p>Карьера, сетевые, ежедневные акции. Типы: классика, атака времени, погоня.</p>
+    </section>
+
+    <section id="race-tips">
+      <h2><i class="fas fa-rocket"></i> 5 советов по гонкам</h2>
+      <ol>
+        <li>Выбирайте авто с запасом нитро.</li>
+        <li>Запоминайте маршруты.</li>
+        <li>Нитро-волна в полёте.</li>
+        <li>Развороты для тарана.</li>
+        <li>Нитро-волна только на прямых.</li>
+      </ol>
+    </section>
+
+    <section id="career">
+      <h2><i class="fas fa-map"></i> Моя карьера</h2>
+      <p>Главы, сезоны, флаги (до 3 за гонку). Задачи: финиш, трюки и т.д. Рекомендуемый/требуемый ранг. Награды — кредиты, чертежи. Можно утроить кредиты за рекламу (2/сут).</p>
+      <div class="highlight"><strong>🏁 НЕ ХВАТАЕТ ФЛАГОВ?</strong> <p>Перепройдите гонки, проверьте задачи.</p></div>
+    </section>
+
+    <!-- СВЕТЛЫЙ БЛОК ДЛЯ КОПИРАЙТА (красные акценты) -->
+    <div class="footer-legal">
+      <p><i class="fas fa-copyright"></i> НА ТОВАРЕ АВТОРСКИЕ ПРАВА · ПЕРЕПРОДАЖА ЗАПРЕЩЕНА</p>
+      <p>Сайт создан для игроков Asphalt 9. Все советы собраны MarinaWinner на основе открытых источников и личного опыта.</p>
+      <div class="copyright-highlight"><i class="fas fa-heart" style="color: #ffd0d0;"> </i> by MarinaWinner  <i class="fas fa-heart" style="color: #ffd0d0;"></i></div>
+    </div>
+
+    <!-- Кнопка наверх -->
+    <a href="#" class="top-link" title="Наверх"><i class="fas fa-arrow-up"></i></a>
+  </div>
+
+  <!-- Скрипт для красных анимированных частиц -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+
+      function initParticles(count) {
+        particles = [];
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.15 + 0.05,
+            size: Math.random() * 4 + 1.5,
+            opacity: Math.random() * 0.5 + 0.2,
+            color: `rgba(230, 57, 70, ${Math.random() * 0.5 + 0.2})` // красные тона
+          });
+        }
+      }
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        initParticles(110);
+      }
+
+      function updateParticles() {
+        for (let p of particles) {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          if (Math.random() < 0.01) {
+            p.vx += (Math.random() - 0.5) * 0.04;
+            p.vy += (Math.random() - 0.5) * 0.03;
+            p.vx = Math.min(Math.max(p.vx, -0.3), 0.3);
+            p.vy = Math.min(Math.max(p.vy, -0.2), 0.3);
+          }
+        }
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, width, height); // прозрачный фон
+        // мягкое свечение
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = '#e63946';
+        for (let p of particles) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.opacity;
+          ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1.0;
+      }
+
+      function animate() {
+        updateParticles();
+        drawParticles();
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+      });
+
+      resizeCanvas();
+      animate();
+    })();
+  </script>
+</body>
+</html>
